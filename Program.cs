@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -11,7 +11,7 @@ namespace Assignment2
 
             //Question 1:
             Console.WriteLine("Question 1:");
-            int[] nums1 = {1,7,10,13};
+            int[] nums1 = { 1, 7, 10, 13 };
             Console.WriteLine("Enter the target number:");
             int target = Int32.Parse(Console.ReadLine());
             int pos = SearchInsert(nums1, target);
@@ -21,22 +21,22 @@ namespace Assignment2
             //Question2:
             Console.WriteLine("Question 2");
             string paragraph = "a.,.";
-            string[] banned = {};
+            string[] banned = { };
             string commonWord = MostCommonWord(paragraph, banned);
             Console.WriteLine("Most frequent word is :{0}", commonWord);
             Console.WriteLine();
 
             //Question 3:
             Console.WriteLine("Question 3");
-            int[] arr1 = { 2, 2, 3, 4 };
+            int[] arr1 = { 2, 2, 2, 3, 3 };
             int lucky_number = FindLucky(arr1);
-            Console.WriteLine("The Lucky number in the given array is {0}", lucky_number);
+            Console.WriteLine("The Lucky number in the given array is: {0}", lucky_number);
             Console.WriteLine();
 
             //Question 4:
             Console.WriteLine("Question 4");
-            string secret = "1807";
-            string guess = "7810";
+            string secret = "1123";
+            string guess = "0111";
             string hint = GetHint(secret, guess);
             Console.WriteLine("Hint for the guess is :{0}", hint);
             Console.WriteLine();
@@ -49,26 +49,26 @@ namespace Assignment2
             Console.WriteLine("Partation lengths are:");
             for (int i = 0; i < part.Count; i++)
             {
-                Console.Write(part[i] + "\t");
+                Console.Write(part[i] + " ");
             }
             Console.WriteLine();
 
             //Question 6:
             Console.WriteLine("Question 6");
-            int[] widths = new int[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
-            string bulls_string9 = "abcdefghijklmnopqrstuvwxyz";
+            int[] widths = new int[] { 4, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
+            string bulls_string9 = "bbbcccdddaaa";
             List<int> lines = NumberOfLines(widths, bulls_string9);
             Console.WriteLine("Lines Required to print:");
             for (int i = 0; i < lines.Count; i++)
             {
-                Console.Write(lines[i] + "\t");
+                Console.Write(lines[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
 
             //Question 7:
             Console.WriteLine("Question 7:");
-            string bulls_string10 = "()[]{}";
+            string bulls_string10 = "{}()";
             bool isvalid = IsValid(bulls_string10);
             if (isvalid)
                 Console.WriteLine("Valid String");
@@ -134,19 +134,19 @@ namespace Assignment2
                     if (nums[middle] == target)
                     {
                         return middle;
-                       
+
                     }
                     if (nums[middle] < target)
                     {
                         first = middle + 1;
-                        ans = middle+1 ;
+                        ans = middle + 1;
                     }
-                    else 
+                    else
                     {
                         ans = middle;
                         last = middle - 1;
-                        
-                      
+
+
                     }
 
                 }
@@ -191,21 +191,21 @@ namespace Assignment2
                 List<String> list = new List<String>(s);
                 list.Remove(banned[0]);
                 s = list.ToArray();
-                
-                for (int i = 0;i<s.Length;i++)
+
+                for (int i = 0; i < s.Length; i++)
                 {
-                  
-                    for(int j= i+1;j<s.Length-1;j++)
+
+                    for (int j = i; j < s.Length - 1; j++)
                     {
-                        if(s[i] == s[j])
+                        if (s[i] == s[j])
                         {
-                            res =s[i];
+                            res = s[i];
                         }
                     }
                 }
-                
+
                 return res;
-               
+
             }
             catch (Exception e)
             {
@@ -237,12 +237,26 @@ namespace Assignment2
         {
             try
             {
-                //write your code here.
-                return 0;
-            }
-            catch (Exception)
-            {
 
+                //int res = 0;
+                int[] res = new int[501];
+                foreach (int num in arr)
+                {
+                    res[num]++;
+                }
+                for (int i = 500; i > 0; i--)
+                {
+                    if (res[i] == i)
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
                 throw;
             }
 
@@ -271,12 +285,34 @@ namespace Assignment2
         {
             try
             {
-                //write your code here.
-                return "";
-            }
-            catch (Exception)
-            {
+                int bulls_count = 0;
+                int[] arr = new int[100];
+                //int asci_code = (int)'0';
+                for (int i = 0; i < secret.Length; i++)
+                {
+                    if (secret[i] == guess[i]) bulls_count++;
+                    else
+                    {
+                        int sc = (int)secret[i] - '0';
+                        int gc = (int)guess[i] - '0';
+                        arr[sc] += 1;
+                        arr[gc] -= 1;
+                    }
+                }
 
+                var cowsCount = guess.Length - bulls_count;
+
+                foreach (var n in arr)
+                {
+                    if (n < 0)
+                        cowsCount += n;
+
+                }
+                return $"{bulls_count}A{cowsCount}B";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
                 throw;
             }
         }
@@ -301,10 +337,23 @@ namespace Assignment2
             {
                 //write your code here.
 
-                return new List<int>() { };
+                int[] map = new int[128];
+                char[] chars = s.ToCharArray();
+                for (int i = 0; i < chars.Length; i++) map[chars[i]] = i;
+                int left = 0, right = 0;
+                List<int> res = new List<int>();
+                while (left < chars.Length)
+                {
+                    right = map[chars[left]];
+                    for (int i = left; i < right; i++) right = Math.Max(right, map[chars[i]]);
+                    res.Add(right - left + 1);
+                    left = right + 1;
+                }
+                return res;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw;
             }
         }
@@ -339,12 +388,24 @@ namespace Assignment2
         {
             try
             {
-                //write your code here.
+                int tp = 0;
+                int tl = 1;
+                foreach (char c in s.ToCharArray())
+                {
+                    tp = tp + widths[c - 'a'];
+                    if (tp > 100)
+                    {
+                        tp = widths[c - 'a'];
+                        tl++;
+                    }
+                }
 
-                return new List<int>() { };
+
+                return new List<int>() { tp, tl };
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw;
             }
 
@@ -375,14 +436,46 @@ namespace Assignment2
             try
             {
                 //write your code here.
-
-                return false;
+                /* int s = 0;
+                 Dictionary<char, int> my_dict = new Dictionary<char, int>();
+                 my_dict.Add('{', 1);
+                 my_dict.Add('}', -1);
+                 my_dict.Add('(', 2);
+                 my_dict.Add(')', -2);
+                 my_dict.Add('[', 3);
+                 my_dict.Add(']', -3);
+                 for (int i = 0;i<bulls_string10.Length-1;i++)
+                 {
+                      s = my_dict[bulls_string10[i]]+my_dict[bulls_string10[i+1]];
+                 }
+                 if (s == 0) return true;
+                 else return false;*/
+                Dictionary<char, char> dict = new Dictionary<char, char>();//dict represents a dictionary where the given opening characters are mapped with the same closing characters.
+                dict['{'] = '}';
+                dict['['] = ']';
+                dict['('] = ')';
+                if (bulls_string10.Length % 2 != 0) return false;
+                Stack<Char> st = new Stack<char>();
+                foreach (char c in bulls_string10)
+                {
+                    if (dict.ContainsKey(c))
+                    {
+                        st.Push(dict[c]);
+                    }
+                    else if (dict.ContainsValue(c))
+                    {
+                        if (st.Count == 0) return false;
+                        if (st.Pop() != c) return false;
+                    }
+                    else return false;
+                }
+                return (st.Count == 0);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw;
             }
-
 
         }
 
@@ -415,12 +508,24 @@ namespace Assignment2
         {
             try
             {
-                //write your code here.
-
-                return 0;
+                string[] morse = new String[] { ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.." };
+                //char[] morsearray = morse.ToCharArray();
+                //List<String> li = new List<string>();
+                var li = new HashSet<string>();
+                foreach (string word in words)
+                {
+                    string s = "";
+                    foreach (char c in word.ToCharArray())
+                    {
+                        s += morse[c - 'a'];
+                    }
+                    li.Add(s);
+                }
+                return li.Count;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw;
             }
 
@@ -449,9 +554,9 @@ namespace Assignment2
                 //write your code here.
                 return 0;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
                 throw;
             }
         }
@@ -476,17 +581,36 @@ namespace Assignment2
 
         public static int MinDistance(string word1, string word2)
         {
-            try
-            {
-                //write your code here.
-                return 0;
+            int m = word1.Length, n = word2.Length;
+            char[] s = word1.ToCharArray();
+            char[] s1 = word2.ToCharArray();
+            int[] dp = new int[n + 1];
 
-            }
-            catch (Exception)
+            for (int j = 0; j <= n; j++)
             {
-
-                throw;
+                dp[j] = j;
             }
+
+            for (int i = 1; i <= m; i++)
+            {
+                int[] newDp = new int[n + 1];
+                newDp[0] = i;
+                for (int j = 1; j <= n; j++)
+                {
+                    if (s[i - 1] == s1[j - 1])
+                        newDp[j] = dp[j - 1];
+                    else
+                        newDp[j] = Math.Min(dp[j - 1] + 1,Math.Min( dp[j] + 1, newDp[j - 1] + 1));
+                }
+                dp = newDp;
+            }
+            return dp[n];
+        }
+        private int min(int a, int b, int c)
+        {
+            if (a <= b && a <= c) return a;
+            else if (b <= a && b <= c) return b;
+            else return c;
         }
     }
 }
