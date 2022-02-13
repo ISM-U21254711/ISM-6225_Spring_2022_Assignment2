@@ -1,4 +1,6 @@
 using System;
+using System.Text;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -20,8 +22,8 @@ namespace Assignment2
 
             //Question2:
             Console.WriteLine("Question 2");
-            string paragraph = "a.,.";
-            string[] banned = { };
+            string paragraph = "Bob hit a ball, the hit BALL flew far after it was hit.";
+            string[] banned = {"hit"};
             string commonWord = MostCommonWord(paragraph, banned);
             Console.WriteLine("Most frequent word is :{0}", commonWord);
             Console.WriteLine();
@@ -103,110 +105,113 @@ namespace Assignment2
             Console.WriteLine();
         }
 
-
-        /*
-        
-        Question 1:
-        Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
-        Note: The algorithm should have run time complexity of O (log n).
-        Hint: Use binary search
-        Example 1:
-        Input: nums = [1,3,5,6], target = 5
-        Output: 2
-        Example 2:
-        Input: nums = [1,3,5,6], target = 2
-        Output: 1
-        Example 3:
-        Input: nums = [1,3,5,6], target = 7
-        Output: 4
-        */
+/// <summary>
+/// The SearhInsert takes in two argumnets nums where an array of sorted intergers is passed and a target integer, the number which is to be inserted in the array.
+/// The index of the num is to be found out if it were to be inserted in the given number list. I have implemented binary search since all the numbers are sorted in the array.
+/// Since the first index element is always less than the last I used a while loop for the same and found out the middle index if the middle is less than the target then the number has to be there in the left of the tree
+/// else the number has to be in the right of the array. 
+/// </summary>
+/// <param name="nums">The array of sorted intergers</param>
+/// <param name="target">The target number for the which the index has to be found out if inserted in an array</param>
+/// <returns>ans which is the index of the number that is given in input if it were to be inserted in the aray</returns>
 
         public static int SearchInsert(int[] nums, int target)
         {
             try
             {
-                int first = 0;
-                int ans = -1;
+                int first = 0; //Inniatilizing first number with zero.
+                int res = -1; //Result is initialized with -1
                 int last = nums.Length - 1;
                 while (first <= last)
                 {
-                    int middle = (first + last) / 2;
-                    if (nums[middle] == target)
+                    int middle = (first + last) / 2; //Finiding the middle number in the array.
+                    if (nums[middle] == target) //If the target number is in the middle the it returns the middle index
                     {
                         return middle;
 
                     }
-                    if (nums[middle] < target)
+                    if (nums[middle] < target)//searches in the left of the array.
                     {
-                        first = middle + 1;
-                        ans = middle + 1;
+                        first = middle + 1;//middle is incremented by 1 and is stored in the first variable
+                        res = middle + 1;//res is incremented by 1
                     }
                     else
                     {
-                        ans = middle;
-                        last = middle - 1;
+                        res = middle;//if targer is greather than the res then it searches in the right of the array.
+                        last = middle - 1;//middle is decremented by 1 and is stored in the last variable.
 
 
                     }
 
                 }
-                return ans;
+                return res;//returns the index of the inserted target variable
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw;
+                
             }
         }
 
-        /*
-         
-        Question 2
-       
-        Given a string paragraph and a string array of the banned words banned, return the most frequent word that is not banned. It is guaranteed there is at least one word that is not banned, and that the answer is unique.
-        The words in paragraph are case-insensitive and the answer should be returned in lowercase.
-        Example 1:
-        Input: paragraph = "Bob hit a ball, the hit BALL flew far after it was hit.", banned = ["hit"]
-        Output: "ball"
-        Explanation: "hit" occurs 3 times, but it is a banned word. "ball" occurs twice (and no other word does), so it is the most frequent non-banned word in the paragraph. 
-        Note that words in the paragraph are not case sensitive, that punctuation is ignored (even if adjacent to words, such as "ball,"), and that "hit" isn't the answer even though it occurs more because it is banned.
-        Example 2:
-        Input: paragraph = "a.", banned = []
-        Output: "a"
-        */
+       /// <summary>
+       /// The MostCommonWord takes in two arguments paragrah a string and array of banned words that are to be removed from the list. The string should not contain the characters and should not have any spaces.
+       /// A stringbuilder is used to replace all the punctuations and then is converted to a string and is split which is stored in an array.
+       /// A Dictionary is used to count the no of times a word is counted in a string. If the banned word loop is true then it is exited from the if loop and if it false then the if becomes true. 
+       /// The the occurences of the word is counted. If the word is not present then the word is counted zero and then incremented if the word is found.
+       /// A key value pair is used to count and retrive the maximum times a word is repeated after removing the banned word.
+       /// </summary>
+       /// <param name="paragraph">It contains the string which has the punctuation.</param>
+       /// <param name="banned">The word that has to be removed from the string</param>
+       /// <returns>count of the maximum repeated element</returns>
 
         public static string MostCommonWord(string paragraph, string[] banned)
         {
             try
             {
 
-                //int c = 0;
-                string res = "";
-                string s1 = "";
-                string para = paragraph.ToLower();
-                string[] s = para.Replace(",", "").Split(" ");
-                if (banned.Length == 0)
-                {
-                    return Regex.Replace(para, @"[^\w\s]", "");
-                }
-                List<String> list = new List<String>(s);
-                list.Remove(banned[0]);
-                s = list.ToArray();
+                string s = paragraph.ToLower().Trim();//Converts the string into lower case letters and removes the spaces in the string.
+                StringBuilder sb = new StringBuilder(s);//Replaces all the punctuation with the empty string.
+                sb.Replace(",", "");
+                sb.Replace(".", "");
+                sb.Replace("!", "");
+                sb.Replace("?", "");
+                sb.Replace("'", "");
+                sb.Replace(";", "");
+                sb.Replace(",", "");
+                string[] s1 = sb.ToString().Split(' ');//Converts the string builder to string and the splits the string and stores in the array.
 
-                for (int i = 0; i < s.Length; i++)
+                Dictionary<string, int> dict = new Dictionary<string, int>();//Initialize an dictionary to map the number of times a word is repeated
+                for (int i = 0; i < s1.Length; i++)
                 {
-
-                    for (int j = i; j < s.Length - 1; j++)
+                    string s2 = s1[i];               //store the incoming string of the stringbuilder in to a string.
+                    if (string.IsNullOrEmpty(s2))
                     {
-                        if (s[i] == s[j])
-                        {
-                            res = s[i];
-                        }
+                        continue;
+                    }
+                    if (!banned.Contains(s2))//if the string(word) is not present in the list of banned words then this loop is executed
+                    {
+                        if (dict.ContainsKey(s2)) dict[s2] += 1; //If the key is present is then the value is incremented by 1
+
+                        else dict.Add(s2, 0); //If the key is absent then the intial value of the key is zero then the if the loop is executed the value is incremented by 1
+                       
                     }
                 }
 
-                return res;
+                KeyValuePair<string, int> max_value = new KeyValuePair<string, int>();//Key value pair is used to retrieve the count of the maximum repeated element.
+                int c = 0;
+                foreach (var kvp in dict)
+                {
+                    if (c == 0) max_value = kvp;//if the count is zero then the max value is initialized with the kry value pair.
+
+                    if (kvp.Value > max_value.Value) max_value = kvp;// if the current key value pair value is greater than the maximum key value key then the count is incremented
+
+                    c++;
+                }
+                return max_value.Key;//The value of the key which is the maximum repeated value is returned.
 
             }
+            
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
@@ -214,44 +219,28 @@ namespace Assignment2
             }
         }
 
-        /*
-        Question 3:
-        Given an array of integers arr, a lucky integer is an integer that has a frequency in the array equal to its value.
-        Return the largest lucky integer in the array. If there is no lucky integer return -1.
- 
-        Example 1:
-        Input: arr = [2,2,3,4]
-        Output: 2
-        Explanation: The only lucky number in the array is 2 because frequency[2] == 2.
-        Example 2:
-        Input: arr = [1,2,2,3,3,3]
-        Output: 3
-        Explanation: 1, 2 and 3 are all lucky numbers, return the largest of them.
-        Example 3:
-        Input: arr = [2,2,2,3,3]
-        Output: -1
-        Explanation: There are no lucky numbers in the array.
-         */
+      /// <summary>
+      /// The FindLucky method takes in array of numbers as an input and returns the number that is repeated according to its number. The result array stores the count of the elements that are repeated.
+      /// The result array is incremented by number of times the number is repeated.
+      /// If the number are repeated the same times as their integer value then tha largest of the two is returned. If none of the condition is satisfied then -1 is returned.
+      /// </summary>
+      /// <param name="arr">Contains the numbers that is passed an in input</param>
+      /// <returns>the lucky number i</returns>
 
         public static int FindLucky(int[] arr)
         {
             try
             {
 
-                //int res = 0;
-                int[] res = new int[501];
-                foreach (int num in arr)
-                {
-                    res[num]++;
-                }
+                int[] res = new int[501];//array is intialized with its size.
+                foreach (int num in arr) res[num]++;//the count of the numbers is which are in the array is incremented.
+                
                 for (int i = 500; i > 0; i--)
                 {
-                    if (res[i] == i)
-                    {
-                        return i;
-                    }
+                    if (res[i] == i) return i; //if the no of times the number is repeated is equal to the number itself then the number is returned.
+                   
                 }
-                return -1;
+                return -1;//else the code returns -1
 
             }
             catch (Exception e)
@@ -262,53 +251,39 @@ namespace Assignment2
 
         }
 
-        /*
-        
-        Question 4:
-        You are playing the Bulls and Cows game with your friend.
-        You write down a secret number and ask your friend to guess what the number is. When your friend makes a guess, you provide a hint with the following info:
-        •	The number of "bulls", which are digits in the guess that are in the correct position.
-        •	The number of "cows", which are digits in the guess that are in your secret number but are located in the wrong position. Specifically, the non-bull digits in the guess that could be rearranged such that they become bulls.
-        Given the secret number secret and your friend's guess guess, return the hint for your friend's guess.
-        The hint should be formatted as "xAyB", where x is the number of bulls and y is the number of cows. Note that both secret and guess may contain duplicate digits.
- 
-        Example 1:
-        Input: secret = "1807", guess = "7810"
-        Output: "1A3B"
-        Explanation: Bulls relate to a '|' and cows are underlined:
-        "1807"
-          |
-        "7810"
-        */
+      /// <summary>
+      /// The GetHint method takes in two strings secret and guess which are integers. The core of the code depends upon find the ascii code and then take the difference of the interger ascii code and the ascii code of 0
+      /// Then increment the secret count and decrementing the guess count to find the size of no.of guess and no.of secret arrays which has the no .of times a a guess is given for the secret number.
+      /// </summary>
+      /// <param name="secret">The string that has the integers</param>
+      /// <param name="guess">The string that has the integers</param>
+      /// <returns>string in the form of xAyB where x is bulls_count and y is cows_Count</returns>
 
         public static string GetHint(string secret, string guess)
         {
             try
             {
-                int bulls_count = 0;
-                int[] arr = new int[100];
+                int bc= 0; //Intializing bulls count with 0
+                int[] arr = new int[100]; //Intializing the size of an array
                 //int asci_code = (int)'0';
-                for (int i = 0; i < secret.Length; i++)
-                {
-                    if (secret[i] == guess[i]) bulls_count++;
+                for (int i = 0; i < secret.Length; i++)// looping the secret string length
+                    if (secret[i] == guess[i]) bc++; //If the index of the secret is equal to the index of the guess then the count of the bulls is incremented.                                   
                     else
                     {
-                        int sc = (int)secret[i] - '0';
-                        int gc = (int)guess[i] - '0';
+                        int sc = (int)secret[i] - '0';//The ascii value of the number at the index i is found for secret count
+                        int gc = (int)guess[i] - '0';//The ascii value of the number at the index i is found for guess count
                         arr[sc] += 1;
                         arr[gc] -= 1;
-                    }
-                }
+                    } 
 
-                var cowsCount = guess.Length - bulls_count;
+                var cc = guess.Length - bc; //Innitializing the variale cc which has the difference value of the guess word length annd bullscount
 
-                foreach (var n in arr)
+                foreach (var n in arr) //For going through the each element in the list of the array.
                 {
-                    if (n < 0)
-                        cowsCount += n;
-
+                    if (n < 0) cc += n; //The cows count is increments by the value of n which is obtained by looping through the array(arr).
+                        
                 }
-                return $"{bulls_count}A{cowsCount}B";
+                return $"{bc}A{cc}B";//Since the optput is in the format of xAyB where A is bulls count and B is cows count, the particular string is returned.
             }
             catch (Exception e)
             {
@@ -318,38 +293,33 @@ namespace Assignment2
         }
 
 
-        /*
-        Question 5:
-        You are given a string s. We want to partition the string into as many parts as possible so that each letter appears in at most one part.
-        Return a list of integers representing the size of these parts.
-        Example 1:
-        Input: s = "ababcbacadefegdehijhklij"
-        Output: [9,7,8]
-        Explanation:
-        The partition is "ababcbaca", "defegde", "hijhklij".
-        This is a partition so that each letter appears in at most one part.
-        A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits s into less parts.
-        */
-
+     /// <summary>
+     /// The partitionLabels methods takes in string as an input and returns the length of the strings after partition where each of the string has the letters that are not repeated in the other partition.
+     /// The last occurence of the first letter has to be found out and then inside the first and last occurence find the last of the element present in between the two letters.
+     /// In the list add the elements after the partition is done and find out the size of the each partition. Return the length of each partition.
+     /// </summary>
+     /// <param name="s">The that has to be partitioned</param>
+     /// <returns>Length of the each partioned string</returns>
         public static List<int> PartitionLabels(string s)
         {
             try
             {
                 //write your code here.
 
-                int[] map = new int[128];
-                char[] chars = s.ToCharArray();
-                for (int i = 0; i < chars.Length; i++) map[chars[i]] = i;
-                int left = 0, right = 0;
-                List<int> res = new List<int>();
-                while (left < chars.Length)
-                {
-                    right = map[chars[left]];
-                    for (int i = left; i < right; i++) right = Math.Max(right, map[chars[i]]);
-                    res.Add(right - left + 1);
-                    left = right + 1;
+                int[] arr = new int[128]; //Initialize the array with the size
+                char[] chars = s.ToCharArray(); //Convert the entire string to character array.
+                for (int i = 0; i < chars.Length; i++) arr[chars[i]] = i;//Then the array arr has the characters at the specifies index 
+                int left = 0, right = 0;//for finding the first and last occurence of the character
+                List<int> res = new List<int>();//for adding the partition strings and find their length
+                while (left < chars.Length)//Since left is '0' and the character lenght is the size of the chars array the loop is executed
+                 {
+                    right = arr[chars[left]];//The right element has to the last occurence of the character that we are trying to find out.
+                    for (int i = left; i < right; i++) right = Math.Max(right, arr[chars[i]]);//The right element where the partiton has to take place is out found by using max function. This is used to to get the maxposition of the element we are looking for and the that is not repeatd in other partitions.
+
+                    res.Add(right - left + 1); //Add the strings into the list.
+                    left = right + 1;// left is incremented by value of right and +1. This makes left start at the second partition.
                 }
-                return res;
+                return res;//It returns the lengths of the partioned strings
             }
             catch (Exception e)
             {
@@ -358,50 +328,31 @@ namespace Assignment2
             }
         }
 
-        /*
-        Question 6
-        You are given a string s of lowercase English letters and an array widths denoting how many pixels wide each lowercase English letter is. Specifically, widths[0] is the width of 'a', widths[1] is the width of 'b', and so on.
-        You are trying to write s across several lines, where each line is no longer than 100 pixels. Starting at the beginning of s, write as many letters on the first line such that the total width does not exceed 100 pixels. Then, from where you stopped in s, continue writing as many letters as you can on the second line. Continue this process until you have written all of s.
-        Return an array result of length 2 where:
-             •	result[0] is the total number of lines.
-             •	result[1] is the width of the last line in pixels.
- 
-        Example 1:
-        Input: widths = [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10], s = "abcdefghijklmnopqrstuvwxyz"
-        Output: [3,60]
-        Explanation: You can write s as follows:
-                     abcdefghij  	 // 100 pixels wide
-                     klmnopqrst  	 // 100 pixels wide
-                     uvwxyz      	 // 60 pixels wide
-                     There are a total of 3 lines, and the last line is 60 pixels wide.
-         Example 2:
-         Input: widths = [4,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10], 
-         s = "bbbcccdddaaa"
-         Output: [2,4]
-         Explanation: You can write s as follows:
-                      bbbcccdddaa  	  // 98 pixels wide
-                      a           	 // 4 pixels wide
-                      There are a total of 2 lines, and the last line is 4 pixels wide.
-         */
-
+      /// <summary>
+      /// NumberOfLines takes in an array of widths i.e the pixel lenght of each character. The core logic is to identify the width of each character present in the string add sum it up untill it reaches 100.
+      /// The output should be the total sum of the left out characters length referencing to pixels(width array) and the number of lines it to complete the total sum of the characters present in the string.
+      /// </summary>
+      /// <param name="widths">The pixel length for each character</param>
+      /// <param name="s">The string that is passed</param>
+      /// <returns>The sum of the lefout characters and the number of lines it to achieve it</returns>
         public static List<int> NumberOfLines(int[] widths, string s)
         {
             try
             {
-                int tp = 0;
-                int tl = 1;
-                foreach (char c in s.ToCharArray())
+                int tp = 0; //Initializing the total pixles variable
+                int tl = 1; //Intializing the total lines variable
+                foreach (char c in s.ToCharArray()) //For iterating the each characters in the string
                 {
-                    tp = tp + widths[c - 'a'];
-                    if (tp > 100)
+                    tp = tp + widths[c - 'a']; //add the pixel length of each character present in the widhts array
+                    if (tp > 100) //If total sum of the pixel is greater than 100 then increment the total lines variable
                     {
-                        tp = widths[c - 'a'];
-                        tl++;
+                        tp = widths[c - 'a']; //add the pixel length of each character present in the widhts array
+                        tl++; //incrementing the total lines variable
                     }
                 }
 
 
-                return new List<int>() { tp, tl };
+                return new List<int>() { tp, tl }; //Returns the list of total lines and total sum of the leftout pixels
             }
             catch (Exception e)
             {
@@ -412,64 +363,38 @@ namespace Assignment2
         }
 
 
-        /*
-        
-        Question 7:
-        Given a string bulls_string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
-        An input string is valid if:
-            1.	Open brackets must be closed by the same type of brackets.
-            2.	Open brackets must be closed in the correct order.
- 
-        Example 1:
-        Input: bulls_string = "()"
-        Output: true
-        Example 2:
-        Input: bulls_string  = "()[]{}"
-        Output: true
-        Example 3:
-        Input: bulls_string  = "(]"
-        Output: false
-        */
+ /// <summary>
+ /// To find if the string is valid or not first check the string has an length of even number. Using stacks and its methods pop and push conjugated with dictionary methods we can find the given is valid or not.
+ /// Push into the stack if the string contains the key in the characters. Else if the character is present in the value the use pop untill all the elements are removed and the count is zero then it is a valid
+ /// string else it is not a valid string.
+ /// </summary>
+ /// <param name="bulls_string10">Contains the all the paranthesis character such as {}{}()</param>
+ /// <returns>If the given paranthesis string is valid or not i.e the fuction returns a boolean value</returns>
 
         public static bool IsValid(string bulls_string10)
         {
             try
             {
-                //write your code here.
-                /* int s = 0;
-                 Dictionary<char, int> my_dict = new Dictionary<char, int>();
-                 my_dict.Add('{', 1);
-                 my_dict.Add('}', -1);
-                 my_dict.Add('(', 2);
-                 my_dict.Add(')', -2);
-                 my_dict.Add('[', 3);
-                 my_dict.Add(']', -3);
-                 for (int i = 0;i<bulls_string10.Length-1;i++)
-                 {
-                      s = my_dict[bulls_string10[i]]+my_dict[bulls_string10[i+1]];
-                 }
-                 if (s == 0) return true;
-                 else return false;*/
                 Dictionary<char, char> dict = new Dictionary<char, char>();//dict represents a dictionary where the given opening characters are mapped with the same closing characters.
                 dict['{'] = '}';
                 dict['['] = ']';
                 dict['('] = ')';
-                if (bulls_string10.Length % 2 != 0) return false;
-                Stack<Char> st = new Stack<char>();
-                foreach (char c in bulls_string10)
+                if (bulls_string10.Length % 2 != 0) return false;//Since to make the string with characters complete the length of the string should be an even number.
+                Stack<Char> st = new Stack<char>();// Intialize a stack which has push and pop operations.
+                foreach (char c in bulls_string10)//loop through each charcters in the string input
                 {
-                    if (dict.ContainsKey(c))
+                    if (dict.ContainsKey(c))//If the dictionary contain the key in the input then the corresponding value is pushed into the stack
                     {
                         st.Push(dict[c]);
                     }
-                    else if (dict.ContainsValue(c))
+                    else if (dict.ContainsValue(c))//If the input string has the value that is present as the value in the dictionary then this satement is executed
                     {
-                        if (st.Count == 0) return false;
-                        if (st.Pop() != c) return false;
+                        if (st.Count == 0) return false;//If the stack count is zero then false is returned
+                        if (st.Pop() != c) return false;//If the current value we are is not equal to the character we are trying to pop(remove) then the method returns false
                     }
                     else return false;
                 }
-                return (st.Count == 0);
+                return (st.Count == 0);//After sucessfully removing all the elements from the stack, if the count of the stack is zero then true is returned.
             }
             catch (Exception e)
             {
@@ -481,47 +406,32 @@ namespace Assignment2
 
 
 
-        /*
-         Question 8
-        International Morse Code defines a standard encoding where each letter is mapped to a series of dots and dashes, as follows:
-        •	'a' maps to ".-",
-        •	'b' maps to "-...",
-        •	'c' maps to "-.-.", and so on.
-        For convenience, the full table for the 26 letters of the English alphabet is given below:
-        [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
-        Given an array of strings words where each word can be written as a concatenation of the Morse code of each letter.
-            •	For example, "cab" can be written as "-.-..--...", which is the concatenation of "-.-.", ".-", and "-...". We will call such a concatenation the transformation of a word.
-        Return the number of different transformations among all words we have.
- 
-        Example 1:
-        Input: words = ["gin","zen","gig","msg"]
-        Output: 2
-        Explanation: The transformation of each word is:
-        "gin" -> "--...-."
-        "zen" -> "--...-."
-        "gig" -> "--...--."
-        "msg" -> "--...--."
-        There are 2 different transformations: "--...-." and "--...--.".
-        */
+        /// <summary>
+        /// The UniqueMorseRepresentations takes in array of words as an input it computes the concatination of the morse codes for the specific characters.
+        /// If after concatination the two words has the same morse codes the hashset is used to remove the repeating morse code words.
+        /// </summary>
+        /// <param name="words">Array of words which are string</param>
+        /// <returns>The count of the length of the length of hash set</returns>
 
         public static int UniqueMorseRepresentations(string[] words)
         {
             try
             {
+                //Morse codes for all the english alphabets.
                 string[] morse = new String[] { ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.." };
                 //char[] morsearray = morse.ToCharArray();
                 //List<String> li = new List<string>();
-                var li = new HashSet<string>();
+                var hs = new HashSet<string>();//For removing the common morse code for a specific word
                 foreach (string word in words)
                 {
-                    string s = "";
+                    string s = "";//Intializing empty string
                     foreach (char c in word.ToCharArray())
                     {
-                        s += morse[c - 'a'];
+                        s += morse[c - 'a'];//It access the index of the morse array for the specific character in the string present in the words array
                     }
-                    li.Add(s);
+                    hs.Add(s);//add the resultant string to the hashset
                 }
-                return li.Count;
+                return hs.Count;//count the no of elements in the hashset
             }
             catch (Exception e)
             {
