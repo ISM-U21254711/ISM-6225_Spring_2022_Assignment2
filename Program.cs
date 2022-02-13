@@ -411,7 +411,7 @@ namespace Assignment2
         /// If after concatination the two words has the same morse codes the hashset is used to remove the repeating morse code words.
         /// </summary>
         /// <param name="words">Array of words which are string</param>
-        /// <returns>The count of the length of the length of hash set</returns>
+        /// <returns>The no of elements in the hashset</returns>
 
         public static int UniqueMorseRepresentations(string[] words)
         {
