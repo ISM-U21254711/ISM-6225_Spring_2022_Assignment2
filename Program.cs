@@ -491,36 +491,15 @@ namespace Assignment2
 
         public static int MinDistance(string word1, string word2)
         {
-            int m = word1.Length, n = word2.Length;
-            char[] s = word1.ToCharArray();
-            char[] s1 = word2.ToCharArray();
-            int[] dp = new int[n + 1];
-
-            for (int j = 0; j <= n; j++)
+            try
             {
-                dp[j] = j;
+             //write your code here.
+             return 0;
             }
-
-            for (int i = 1; i <= m; i++)
+             catch (Exception e)
             {
-                int[] newDp = new int[n + 1];
-                newDp[0] = i;
-                for (int j = 1; j <= n; j++)
-                {
-                    if (s[i - 1] == s1[j - 1])
-                        newDp[j] = dp[j - 1];
-                    else
-                        newDp[j] = Math.Min(dp[j - 1] + 1,Math.Min( dp[j] + 1, newDp[j - 1] + 1));
-                }
-                dp = newDp;
+                Console.WriteLine(e.Message);
+                throw;
             }
-            return dp[n];
-        }
-        private int min(int a, int b, int c)
-        {
-            if (a <= b && a <= c) return a;
-            else if (b <= a && b <= c) return b;
-            else return c;
-        }
     }
 }
